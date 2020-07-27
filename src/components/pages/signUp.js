@@ -1,171 +1,198 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Icon from "@material-ui/core/Icon";
+import Input from "@material-ui/core/Input";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
-export default class SignUp extends Component {
-  state = {
-    input: {},
-    errors: {},
-  };
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+import axios from "axios";
+
+const SignUp = () => {
+  const [inputs, setInputs] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    pass: "",
+    confirmPass: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const { firstName, lastName, email, pass, confirmPass } = inputs;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (this.validate()) {
+    if (validate()) {
       let input = {};
-      input["firstName"] = "";
-      input["lastName"] = "";
-      input["email"] = "";
-      input["pass"] = "";
-      input["confirmPass"] = "";
-      this.setState({ input });
+      input.firstName = "";
+      input.lastName = "";
+      input.email = "";
+      input.pass = "";
+      input.confirmPass = "";
+      setInputs(input);
+
+      axios
+        .post("../../server.js", inputs)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
     }
   };
 
-  validate = () => {
-    let input = this.state;
+  const validate = () => {
+    let input = inputs;
     let errors = {};
     let isValid = true;
 
-    if (!input["firstName"]) {
+    if (!input.firstName) {
       isValid = false;
-      errors["firstName"] = "Please enter your first name.";
+      errors.firstName = "Please enter your first name";
     }
-    if (!input["lastName"]) {
+    if (!input.lastName) {
       isValid = false;
-      errors["lastName"] = "Please enter your last name.";
+      errors.lastName = "Please enter your last name";
     }
-    if (!input["email"]) {
+    if (!input.email) {
       isValid = false;
-      errors["email"] = "Please enter your email Address.";
+      errors.email = "Please enter your email Address";
     }
-
-    if (typeof input["email"] !== "undefined") {
+    if (typeof input.email !== "undefined") {
       let pattern = new RegExp(
         /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
       );
-      if (!pattern.test(input["email"])) {
+      if (!pattern.test(input.email)) {
         isValid = false;
-        errors["email"] = "Please enter a valid email address.";
+        errors.email = "Please enter a valid email address";
       }
     }
-
-    if (!input["pass"]) {
+    if (!input.pass) {
       isValid = false;
-      errors["pass"] = "Please enter your password.";
+      errors.pass = "Please enter your password";
     }
-
-    if (typeof input["pass"] !== "undefined") {
+    if (typeof input.pass !== "undefined") {
       let pattern = new RegExp(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$/
       );
-      if (!pattern.test(input["pass"])) {
+      if (!pattern.test(input.pass)) {
         isValid = false;
-        errors["pass"] =
-          "Please enter a valid password - 1 uppercase and 1 lowecase letters, 1 symbol and 1 number(min 8 max 32).";
+        errors.pass =
+          "Please enter a valid password - 1 uppercase and 1 lowecase letters, 1 symbol and 1 number(min 8 max 64)";
       }
     }
 
-    if (!input["confirmPass"]) {
+    if (!input.confirmPass) {
       isValid = false;
-      errors["confirmPass"] = "Please enter your confirm password.";
+      errors.confirmPass = "Please enter your confirm password";
     }
-
     if (
-      typeof input["pass"] !== "undefined" &&
-      typeof input["confirmPass"] !== "undefined"
+      typeof input.pass !== "undefined" &&
+      typeof input.confirmPass !== "undefined"
     ) {
-      if (input["pass"] !== input["confirmPass"]) {
+      if (input.pass !== input.confirmPass) {
         isValid = false;
-        errors["pass"] = "Passwords don't match.";
+        errors.confirmPass = errors.confirmPass
+          ? "Please enter your confirm password"
+          : "Passwords don't match";
       }
     }
-    this.setState({
-      errors: errors,
-    });
+    setErrors(errors);
     return isValid;
   };
 
-  render() {
-    return (
-      <>
-        <form className="sign__up" onSubmit={this.handleSubmit} noValidate>
-          <legend>Sign Up</legend>
-          <div className="row">
-            <div className="col-xs-12 col-md-6">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="First name"
-                name="firstName"
-                value={this.state.input.firstName}
-                onChange={this.handleChange}
-                required
-              />
-              <div className="text-danger">{this.state.errors.firstName}</div>
-            </div>
-            <div className="col-xs-12 col-md-6">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Last name"
-                name="lastName"
-                value={this.state.input.lastName}
-                onChange={this.handleChange}
-                required
-              />
-              <div className="text-danger">{this.state.errors.lastName}</div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <input
-                type="email"
-                className="form-control"
-                placeholder="Email"
-                name="email"
-                value={this.state.input.email}
-                onChange={this.handleChange}
-                required
-              />
-              <div className="text-danger">{this.state.errors.email}</div>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Password"
-                name="pass"
-                value={this.state.input.pass}
-                onChange={this.handleChange}
-                required
-              />
-              <div className="text-danger">{this.state.errors.pass}</div>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Confirm Password"
-                name="confirmPass"
-                value={this.state.input.confirmPass}
-                onChange={this.handleChange}
-                required
-              />
-              <div className="text-danger">{this.state.errors.confirmPass}</div>
-              <button type="submit" className="btn btn-outline-danger">
-                Sign Up
-              </button>
-            </div>
-          </div>
-        </form>
-        <Link to="/">
-          <i
-            data-toggle="tooltip"
-            data-placement="top"
-            title="back to home!"
-            className="fas fa-arrow-circle-left"
-          ></i>
-        </Link>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <form className="sign__up" onSubmit={handleSubmit} noValidate>
+        <Typography gutterBottom variant="h5" component="h3">
+          Sign Up
+        </Typography>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={6}>
+            <Input
+              color="secondary"
+              type="text"
+              placeholder="First name"
+              name="firstName"
+              value={firstName}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <Typography variant="caption" color="error" component="p">
+              {errors.firstName}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Input
+              color="secondary"
+              type="text"
+              placeholder="Last name"
+              name="lastName"
+              value={lastName}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <Typography variant="caption" color="error" component="p">
+              {errors.lastName}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Input
+          color="secondary"
+          type="email"
+          placeholder="Email"
+          name="email"
+          value={email}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
+        <Typography variant="caption" color="error" component="p">
+          {errors.email}
+        </Typography>
+        <Input
+          color="secondary"
+          type="password"
+          placeholder="Password"
+          name="pass"
+          value={pass}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
+        <Typography variant="caption" color="error" component="p">
+          {errors.pass}
+        </Typography>
+        <Input
+          color="secondary"
+          type="password"
+          placeholder="Confirm Password"
+          name="confirmPass"
+          value={confirmPass}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
+        <Typography variant="caption" color="error" component="p">
+          {errors.confirmPass}
+        </Typography>
+        <Button type="submit" variant="contained" color="secondary">
+          Sign Up
+        </Button>
+      </form>
+      <Link to="/">
+        <Icon className="back">reply</Icon>
+      </Link>
+    </>
+  );
+};
+
+export default SignUp;

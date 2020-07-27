@@ -1,60 +1,60 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Icon from "@material-ui/core/Icon";
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+import Typography from "@material-ui/core/Typography";
 
-export default class SignUp extends Component {
-  state = {
-    email: "",
-    pass: "",
-  };
-  handleChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
+const SignIn = () => {
+
+    const [inputs, setInputs] = useState({
+        email: '',
+        pass: ''
     });
+    const { email, pass } = inputs;
+
+
+ const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs(inputs => ({ ...inputs, [name]: value }));
   };
-  handleSubmit = (e) => {
+  
+ const handleSubmit = (e) => {
     e.preventDefault();
   };
-  render() {
-    const { email, pass } = this.state;
+
     return (
       <>
-        <form className="sign__in" onSubmit={this.handleSubmit}>
-          <legend>Sign In</legend>
-          <div className="row">
-            <div className="col">
-              <input
+        <form className="sign__in" onSubmit={handleSubmit}>
+        <Typography gutterBottom variant="h5" component="h3">Sign In</Typography>
+              <Input
+                color="secondary"
                 type="email"
-                className="form-control"
                 value={email}
                 name="email"
                 placeholder="Email"
-                onChange={this.handleChange}
+                onChange={handleChange}
                 required
+                fullWidth
               />
-              <input
+              <Input
+                color="secondary"
                 type="password"
-                className="form-control"
                 value={pass}
                 name="pass"
                 placeholder="Password"
-                onChange={this.handleChange}
+                onChange={handleChange}
                 required
+                fullWidth
               />
-              <button type="submit" className="btn btn-outline-danger">
+              <Button type="submit" variant="contained" color="secondary">
                 Sign In
-              </button>
-            </div>
-          </div>
+              </Button>
         </form>
         <Link to="/">
-          <i
-            data-toggle="tooltip"
-            data-placement="top"
-            title="back to home!"
-            className="fas fa-arrow-circle-left"
-          ></i>
+        <Icon className="back">reply</Icon>
         </Link>
       </>
     );
-  }
 }
+export default SignIn;

@@ -1,6 +1,10 @@
-.sign__up input.form-control, .btn-outline-danger, .sign__in input.form-control {
-    margin-top: 10px;
-} 
+form.sign__up .MuiInputBase-input, form.sign__in .MuiInputBase-input {
+    margin-top: 20px;
+}
+.sign__up button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSecondary,
+.sign__in button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSecondary {
+    margin-top: 40px;
+}
 form.sign__up, form.sign__in {
     position: absolute;
     top: 15%;
@@ -11,11 +15,11 @@ form.sign__up, form.sign__in {
     text-align: center;
     margin-top: 90px;
 }
-i.fas.fa-arrow-circle-left {
+span.material-icons.MuiIcon-root.back {
     position: absolute;
     bottom: 30px;
     left: 30px;
-    font-size: 40px;
+    font-size: 70px;
     color: #dc3545;
 }
 .card {
@@ -27,4 +31,7 @@ i.fas.fa-arrow-circle-left {
     margin: 0 auto;
     text-align: center;
     margin-top: 50px;
+}
+h3.MuiTypography-root.card-title.MuiTypography-h5.MuiTypography-gutterBottom {
+    margin-bottom: 20px;
 }
