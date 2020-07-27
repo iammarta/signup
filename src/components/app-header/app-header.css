@@ -1,0 +1,29 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    background-color: #dc3545;
+}
+
+.header-list {
+    display: flex;
+    margin: 0;
+    align-items: center;
+    color: #fff;
+    list-style-type: none;
+}
+
+.header-list li {
+    margin-right: 20px;
+    font-size: 18px;
+}
+
+.header-list li a {
+    color: #fff;
+}
+
+.home {
+    color: #fff;
+    font-size: 55px;
+}

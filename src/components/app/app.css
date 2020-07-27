@@ -1,0 +1,30 @@
+.sign__up input.form-control, .btn-outline-danger, .sign__in input.form-control {
+    margin-top: 10px;
+} 
+form.sign__up, form.sign__in {
+    position: absolute;
+    top: 15%;
+    right: 0;
+    left: 0;
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 90px;
+}
+i.fas.fa-arrow-circle-left {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    font-size: 40px;
+    color: #dc3545;
+}
+.card {
+    position: absolute;
+    top: 15%;
+    right: 0;
+    left: 0;
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+}
