@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { Link, useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import axios from "axios";
 
@@ -13,37 +14,46 @@ const SignUp = () => {
     firstName: "",
     lastName: "",
     email: "",
-    pass: "",
-    confirmPass: "",
+    password: "",
+    confirmpassword: "",
   });
 
   const [errors, setErrors] = useState({});
 
-  const { firstName, lastName, email, pass, confirmPass } = inputs;
+  let history = useHistory();
 
-  const handleChange = (e) => {
+  const { firstName, lastName, email, password, confirmpassword } = inputs;
+
+  const handleChange = e => {
     const { name, value } = e.target;
     setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
+
+    axios
+      .post("http://localhost:3000/signup", inputs)
+      .then( res => {
+        if (res.data.result === "register") {
+          Swal.fire("You succesfully registered!");
+          history.push("/signin");
+        } else if (res.data.result === "exist") {
+          Swal.fire("User already exists with this email!");
+        }
+      })
+      .catch( err => {
+        console.log(err);
+      });
 
     if (validate()) {
       let input = {};
       input.firstName = "";
       input.lastName = "";
       input.email = "";
-      input.pass = "";
-      input.confirmPass = "";
+      input.password = "";
+      input.confirmpassword = "";
       setInputs(input);
-
-      axios
-        .post("../../server.js", inputs)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
     }
   };
 
@@ -73,34 +83,34 @@ const SignUp = () => {
         errors.email = "Please enter a valid email address";
       }
     }
-    if (!input.pass) {
+    if (!input.password) {
       isValid = false;
-      errors.pass = "Please enter your password";
+      errors.password = "Please enter your passwordword";
     }
-    if (typeof input.pass !== "undefined") {
+    if (typeof input.password !== "undefined") {
       let pattern = new RegExp(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$/
       );
-      if (!pattern.test(input.pass)) {
+      if (!pattern.test(input.password)) {
         isValid = false;
-        errors.pass =
-          "Please enter a valid password - 1 uppercase and 1 lowecase letters, 1 symbol and 1 number(min 8 max 64)";
+        errors.password =
+          "Please enter a valid passwordword - 1 uppercase and 1 lowecase letters, 1 symbol and 1 number(min 8 max 64)";
       }
     }
 
-    if (!input.confirmPass) {
+    if (!input.confirmpassword) {
       isValid = false;
-      errors.confirmPass = "Please enter your confirm password";
+      errors.confirmpassword = "Please enter your confirm passwordword";
     }
     if (
-      typeof input.pass !== "undefined" &&
-      typeof input.confirmPass !== "undefined"
+      typeof input.password !== "undefined" &&
+      typeof input.confirmpassword !== "undefined"
     ) {
-      if (input.pass !== input.confirmPass) {
+      if (input.password !== input.confirmpassword) {
         isValid = false;
-        errors.confirmPass = errors.confirmPass
+        errors.confirmpasswordword = errors.confirmpassword
           ? "Please enter your confirm password"
-          : "Passwords don't match";
+          : "password don't match";
       }
     }
     setErrors(errors);
@@ -161,28 +171,28 @@ const SignUp = () => {
         <Input
           color="secondary"
           type="password"
-          placeholder="Password"
-          name="pass"
-          value={pass}
+          placeholder="password"
+          name="password"
+          value={password}
           onChange={handleChange}
           required
           fullWidth
         />
         <Typography variant="caption" color="error" component="p">
-          {errors.pass}
+          {errors.password}
         </Typography>
         <Input
           color="secondary"
           type="password"
-          placeholder="Confirm Password"
-          name="confirmPass"
-          value={confirmPass}
+          placeholder="Confirm password"
+          name="confirmpassword"
+          value={confirmpassword}
           onChange={handleChange}
           required
           fullWidth
         />
         <Typography variant="caption" color="error" component="p">
-          {errors.confirmPass}
+          {errors.confirmpassword}
         </Typography>
         <Button type="submit" variant="contained" color="secondary">
           Sign Up

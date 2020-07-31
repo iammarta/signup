@@ -22,6 +22,9 @@ span.material-icons.MuiIcon-root.back {
     font-size: 70px;
     color: #dc3545;
 }
+button.swal2-confirm.swal2-styled {
+    background-color: #dc3545;
+}
 .card {
     position: absolute;
     top: 15%;
