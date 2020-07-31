@@ -3,19 +3,19 @@ import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
+import { connect } from "react-redux";
+import { startSignin } from "../../redux/actions";
 
-const SignIn = () => {
+const SignIn = (props) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
 
-  const { email, password } = inputs;
-
   let history = useHistory();
+
+  const { email, password } = inputs;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,22 +24,11 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:3000/signin", inputs)
-      .then( res => {
-        if (res.data.result === "success") {
-          history.push("/dasboard");
-        } else if (res.data.result === "password") {
-          Swal.fire("Password is incorrect!");
-        } else {
-          Swal.fire("User not found!");
-        }
-      })
-      .catch( err => {
-        console.log(err);
-      });
+    props.signin(inputs);
   };
+  if (props.loggedIn) {
+    history.push("/dashboard");
+  }
 
   return (
     <>
@@ -77,4 +66,18 @@ const SignIn = () => {
     </>
   );
 };
-export default SignIn;
+
+const mapStateToProps = (state) => {
+  return {
+    loggedIn: state.signIn,
+    signinProcessing: state.signinProcessing,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signin: (data) => dispatch(startSignin(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

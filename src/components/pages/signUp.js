@@ -5,11 +5,10 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
+import { connect } from "react-redux";
+import { startSignup } from "../../redux/actions";
 
-import axios from "axios";
-
-const SignUp = () => {
+const SignUp = (props) => {
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -24,28 +23,13 @@ const SignUp = () => {
 
   const { firstName, lastName, email, password, confirmpassword } = inputs;
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:3000/signup", inputs)
-      .then( res => {
-        if (res.data.result === "register") {
-          Swal.fire("You succesfully registered!");
-          history.push("/signin");
-        } else if (res.data.result === "exist") {
-          Swal.fire("User already exists with this email!");
-        }
-      })
-      .catch( err => {
-        console.log(err);
-      });
-
     if (validate()) {
       let input = {};
       input.firstName = "";
@@ -54,8 +38,12 @@ const SignUp = () => {
       input.password = "";
       input.confirmpassword = "";
       setInputs(input);
+      props.signup(inputs);
     }
   };
+  if (props.registered) {
+    history.push("/signin");
+  }
 
   const validate = () => {
     let input = inputs;
@@ -205,4 +193,17 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  return {
+    registered: state.registered,
+    signupProcessing: state.signupProcessing,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signup: (content) => dispatch(startSignup(content)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

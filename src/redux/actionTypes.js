@@ -1,0 +1,4 @@
+export const SIGNIN = "SIGNIN";
+export const SIGNUP = "SIGNUP";
+export const SIGNINPROCESSING = "SIGNINPROCESSING";
+export const SIGNUPPROCESSING = "SIGNUPPROCESSING";
