@@ -13,12 +13,11 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
     margin: 0,
-    background:
-      "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%) no-repeat fixed",
     textTransform: "capitalize",
     height: "100vh",
   },
@@ -41,49 +40,59 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 const App = () => {
   const classes = useStyles();
+  const theme = createMuiTheme({
+    palette: {
+      background: {
+        default: " #e2d1c3",
+      },
+    },
+  });
+
   return (
-    <Router>
-      <CssBaseline />
-      <div className={classes.root}>
-        <Route path="/dashboard" component={Dashboard} exact />
-        <Route path="/signup" component={SignUp} exact />
-        <Route path="/signin" component={SignIn} exact />
-        <div className="container">
-          <Route path="/" exact>
-            <Container>
-              <Card className={classes.card}>
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    classname={classes.cardTitle}
-                    component="h2"
-                  >
-                    Do you have an account?
-                  </Typography>
-                  <Typography
-                    gutterBottom
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Please, <Link to="/signin/">sign in.</Link>
-                  </Typography>
-                  <Typography
-                    gutterBottom
-                    variant="body1"
-                    color="textSecondary"
-                    component="p"
-                  >
-                    Or <Link to="/signup/">sign up</Link> the new account
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Container>
-          </Route>
+    <MuiThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline />
+        <div className={classes.root}>
+          <Route path="/dashboard" component={Dashboard} exact />
+          <Route path="/signup" component={SignUp} exact />
+          <Route path="/signin" component={SignIn} exact />
+          <div className="container">
+            <Route path="/" exact>
+              <Container>
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      classname={classes.cardTitle}
+                      component="h2"
+                    >
+                      Do you have an account?
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body1"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      Please, <Link to="/signin/">sign in.</Link>
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body1"
+                      color="textSecondary"
+                      component="p"
+                    >
+                      Or <Link to="/signup/">sign up</Link> the new account
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Container>
+            </Route>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </MuiThemeProvider>
   );
 };
 
