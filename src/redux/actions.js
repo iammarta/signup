@@ -16,9 +16,15 @@ export const startSignin = (content) => {
         if (res.data.result === "success") {
           dispatch(signin(content));
         } else if (res.data.result === "password") {
-          Swal.fire("Password is incorrect!");
+          Swal.fire({
+              text: "Password is incorrect!",
+              confirmButtonColor: "#dc3545", 
+            });
         } else {
-          Swal.fire("User not found!");
+          Swal.fire({
+              text: "User not found!",
+              confirmButtonColor: "#dc3545", 
+            });
         }
       })
       .catch((err) => {
@@ -34,10 +40,16 @@ export const startSignup = (content) => {
       .post("http://localhost:3000/signup", content)
       .then((res) => {
         if (res.data.result === "register") {
-          Swal.fire(`Success! Thank you for signing up ${content.firstName}`);
+          Swal.fire({
+              text: `Success! Thank you for signing up ${content.firstName}`,
+              confirmButtonColor: "#dc3545", 
+            });
           dispatch(signup(content));
         } else {
-          Swal.fire(`User already exists with this email ${content.email}!`);
+          Swal.fire({
+              text: `User already exists with this email ${content.email}!`,
+              confirmButtonColor: "#dc3545", 
+            });
         }
       })
       .catch((err) => {

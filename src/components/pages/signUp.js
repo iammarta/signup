@@ -7,8 +7,38 @@ import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { startSignup } from "../../redux/actions";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    sign__up: {
+        position: 'absolute',
+        top: '15%',
+        right: '0',
+        left: '0',
+        width: '50%',
+        margin:'0 auto',
+        textAlign: 'center',
+        marginTop: '90px',
+    },
+    input:{
+        marginTop:'20px',
+    },
+    button:{
+        marginTop: '40px'
+    },
+    back: {
+        position: 'absolute',
+        bottom: '30px',
+        left: '30px',
+        fontSize: '70px',
+        color: '#dc3545',
+    }
+  });
 
 const SignUp = (props) => {
+ 
+    const classes = useStyles();
+
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -107,13 +137,14 @@ const SignUp = (props) => {
 
   return (
     <>
-      <form className="sign__up" onSubmit={handleSubmit} noValidate>
+      <form className={classes.sign__up} onSubmit={handleSubmit} noValidate>
         <Typography gutterBottom variant="h5" component="h3">
           Sign Up
         </Typography>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6}>
             <Input
+            className={classes.input}
               color="secondary"
               type="text"
               placeholder="First name"
@@ -129,6 +160,7 @@ const SignUp = (props) => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Input
+             className={classes.input}
               color="secondary"
               type="text"
               placeholder="Last name"
@@ -144,6 +176,7 @@ const SignUp = (props) => {
           </Grid>
         </Grid>
         <Input
+         className={classes.input}
           color="secondary"
           type="email"
           placeholder="Email"
@@ -157,6 +190,7 @@ const SignUp = (props) => {
           {errors.email}
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           placeholder="password"
@@ -170,6 +204,7 @@ const SignUp = (props) => {
           {errors.password}
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           placeholder="Confirm password"
@@ -182,12 +217,12 @@ const SignUp = (props) => {
         <Typography variant="caption" color="error" component="p">
           {errors.confirmpassword}
         </Typography>
-        <Button type="submit" variant="contained" color="secondary">
+        <Button type="submit" variant="contained" className={classes.button} color="secondary">
           Sign Up
         </Button>
       </form>
       <Link to="/">
-        <Icon className="back">reply</Icon>
+        <Icon className={classes.back}>reply</Icon>
       </Link>
     </>
   );
