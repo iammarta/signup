@@ -6,60 +6,59 @@ import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { startSignin } from "../../redux/actions";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-    sign__in: {
-        position: 'absolute',
-        top: '15%',
-        right: '0',
-        left: '0',
-        width: '50%',
-        margin:'0 auto',
-        textAlign: 'center',
-        marginTop: '90px',
-    },
-    input:{
-        marginTop:'20px',
-    },
-    button:{
-        marginTop: '40px'
-    },
-    back: {
-        position: 'absolute',
-        bottom: '30px',
-        left: '30px',
-        fontSize: '70px',
-        color: '#dc3545',
-    }
-  });
+  sign__in: {
+    position: "absolute",
+    top: "15%",
+    right: "0",
+    left: "0",
+    width: "50%",
+    margin: "0 auto",
+    textAlign: "center",
+    marginTop: "90px",
+  },
+  input: {
+    marginTop: "20px",
+  },
+  button: {
+    marginTop: "40px",
+  },
+  back: {
+    position: "absolute",
+    bottom: "30px",
+    left: "30px",
+    fontSize: "70px",
+    color: "#dc3545",
+  },
+});
 
 const SignIn = (props) => {
+  const classes = useStyles();
 
-    const classes = useStyles();
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
 
-    const [inputs, setInputs] = useState({
-      email: "",
-      password: "",
-    });
-  
-    let history = useHistory();
-  
-    const { email, password } = inputs;
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setInputs((inputs) => ({ ...inputs, [name]: value }));
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      props.signin(inputs);
-    };
-    if (props.loggedIn) {
-      history.push("/dashboard");
-    }
-  
+  let history = useHistory();
+
+  const { email, password } = inputs;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    props.signin(inputs);
+  };
+  if (props.loggedIn) {
+    history.push("/dashboard");
+  }
+
   return (
     <>
       <form className={classes.sign__in} onSubmit={handleSubmit}>
@@ -67,7 +66,7 @@ const SignIn = (props) => {
           Sign In
         </Typography>
         <Input
-         className={classes.input}
+          className={classes.input}
           color="secondary"
           type="email"
           value={email}
@@ -78,7 +77,7 @@ const SignIn = (props) => {
           fullWidth
         />
         <Input
-        className={classes.input}
+          className={classes.input}
           color="secondary"
           type="password"
           value={password}
@@ -88,7 +87,12 @@ const SignIn = (props) => {
           required
           fullWidth
         />
-        <Button type="submit" variant="contained" className={classes.button} color="secondary">
+        <Button
+          type="submit"
+          variant="contained"
+          className={classes.button}
+          color="secondary"
+        >
           Sign In
         </Button>
       </form>
@@ -105,7 +109,6 @@ const mapStateToProps = (state) => {
     signinProcessing: state.signinProcessing,
   };
 };
-
 
 const mapDispatchToProps = (dispatch) => {
   return {

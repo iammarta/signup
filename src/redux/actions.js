@@ -17,14 +17,14 @@ export const startSignin = (content) => {
           dispatch(signin(content));
         } else if (res.data.result === "password") {
           Swal.fire({
-              text: "Password is incorrect!",
-              confirmButtonColor: "#dc3545", 
-            });
+            text: "Password is incorrect!",
+            confirmButtonColor: "#dc3545",
+          });
         } else {
           Swal.fire({
-              text: "User not found!",
-              confirmButtonColor: "#dc3545", 
-            });
+            text: "User not found!",
+            confirmButtonColor: "#dc3545",
+          });
         }
       })
       .catch((err) => {
@@ -41,15 +41,15 @@ export const startSignup = (content) => {
       .then((res) => {
         if (res.data.result === "register") {
           Swal.fire({
-              text: `Success! Thank you for signing up ${content.firstName}`,
-              confirmButtonColor: "#dc3545", 
-            });
+            text: `Success! Thank you for signing up ${content.firstName}`,
+            confirmButtonColor: "#dc3545",
+          });
           dispatch(signup(content));
         } else {
           Swal.fire({
-              text: `User already exists with this email ${content.email}!`,
-              confirmButtonColor: "#dc3545", 
-            });
+            text: `User already exists with this email ${content.email}!`,
+            confirmButtonColor: "#dc3545",
+          });
         }
       })
       .catch((err) => {
