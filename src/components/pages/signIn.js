@@ -6,12 +6,42 @@ import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { startSignin } from "../../redux/actions";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    sign__in: {
+        position: 'absolute',
+        top: '15%',
+        right: '0',
+        left: '0',
+        width: '50%',
+        margin:'0 auto',
+        textAlign: 'center',
+        marginTop: '90px',
+    },
+    input:{
+        marginTop:'20px',
+    },
+    button:{
+        marginTop: '40px'
+    },
+    back: {
+        position: 'absolute',
+        bottom: '30px',
+        left: '30px',
+        fontSize: '70px',
+        color: '#dc3545',
+    }
+  });
+
 
 const SignIn = (props) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
+  
+  const classes = useStyles();
 
   let history = useHistory();
 
@@ -32,11 +62,12 @@ const SignIn = (props) => {
 
   return (
     <>
-      <form className="sign__in" onSubmit={handleSubmit}>
+      <form className={classes.sign__in} onSubmit={handleSubmit}>
         <Typography gutterBottom variant="h5" component="h3">
           Sign In
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="email"
           value={email}
@@ -47,6 +78,7 @@ const SignIn = (props) => {
           fullWidth
         />
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           value={password}
@@ -56,12 +88,12 @@ const SignIn = (props) => {
           required
           fullWidth
         />
-        <Button type="submit" variant="contained" color="secondary">
+        <Button type="submit" variant="contained" className={classes.button} color="secondary">
           Sign In
         </Button>
       </form>
       <Link to="/">
-        <Icon className="back">reply</Icon>
+      <Icon className={classes.back}>reply</Icon>
       </Link>
     </>
   );
