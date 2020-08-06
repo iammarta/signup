@@ -3,19 +3,49 @@ import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
+import { connect } from "react-redux";
+import { startSignin } from "../../redux/actions";
+import { makeStyles } from '@material-ui/core/styles';
 
-const SignIn = () => {
+const useStyles = makeStyles({
+    sign__in: {
+        position: 'absolute',
+        top: '15%',
+        right: '0',
+        left: '0',
+        width: '50%',
+        margin:'0 auto',
+        textAlign: 'center',
+        marginTop: '90px',
+    },
+    input:{
+        marginTop:'20px',
+    },
+    button:{
+        marginTop: '40px'
+    },
+    back: {
+        position: 'absolute',
+        bottom: '30px',
+        left: '30px',
+        fontSize: '70px',
+        color: '#dc3545',
+    }
+  });
+
+
+const SignIn = (props) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
-
-  const { email, password } = inputs;
+  
+  const classes = useStyles();
 
   let history = useHistory();
+
+  const { email, password } = inputs;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,30 +54,20 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:3000/signin", inputs)
-      .then( res => {
-        if (res.data.result === "success") {
-          history.push("/dasboard");
-        } else if (res.data.result === "password") {
-          Swal.fire("Password is incorrect!");
-        } else {
-          Swal.fire("User not found!");
-        }
-      })
-      .catch( err => {
-        console.log(err);
-      });
+    props.signin(inputs);
   };
+  if (props.loggedIn) {
+    history.push("/dashboard");
+  }
 
   return (
     <>
-      <form className="sign__in" onSubmit={handleSubmit}>
+      <form className={classes.sign__in} onSubmit={handleSubmit}>
         <Typography gutterBottom variant="h5" component="h3">
           Sign In
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="email"
           value={email}
@@ -58,6 +78,7 @@ const SignIn = () => {
           fullWidth
         />
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           value={password}
@@ -67,14 +88,28 @@ const SignIn = () => {
           required
           fullWidth
         />
-        <Button type="submit" variant="contained" color="secondary">
+        <Button type="submit" variant="contained" className={classes.button} color="secondary">
           Sign In
         </Button>
       </form>
       <Link to="/">
-        <Icon className="back">reply</Icon>
+      <Icon className={classes.back}>reply</Icon>
       </Link>
     </>
   );
 };
-export default SignIn;
+
+const mapStateToProps = (state) => {
+  return {
+    loggedIn: state.signIn,
+    signinProcessing: state.signinProcessing,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signin: (data) => dispatch(startSignin(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

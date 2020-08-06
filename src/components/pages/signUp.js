@@ -5,11 +5,37 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
+import { connect } from "react-redux";
+import { startSignup } from "../../redux/actions";
+import { makeStyles } from '@material-ui/core/styles';
 
-import axios from "axios";
+const useStyles = makeStyles({
+    sign__up: {
+        position: 'absolute',
+        top: '15%',
+        right: '0',
+        left: '0',
+        width: '50%',
+        margin:'0 auto',
+        textAlign: 'center',
+        marginTop: '90px',
+    },
+    input:{
+        marginTop:'20px',
+    },
+    button:{
+        marginTop: '40px'
+    },
+    back: {
+        position: 'absolute',
+        bottom: '30px',
+        left: '30px',
+        fontSize: '70px',
+        color: '#dc3545',
+    }
+  });
 
-const SignUp = () => {
+const SignUp = (props) => {
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -18,34 +44,21 @@ const SignUp = () => {
     confirmpassword: "",
   });
 
+  const classes = useStyles();
+
   const [errors, setErrors] = useState({});
 
   let history = useHistory();
 
   const { firstName, lastName, email, password, confirmpassword } = inputs;
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs((inputs) => ({ ...inputs, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:3000/signup", inputs)
-      .then( res => {
-        if (res.data.result === "register") {
-          Swal.fire("You succesfully registered!");
-          history.push("/signin");
-        } else if (res.data.result === "exist") {
-          Swal.fire("User already exists with this email!");
-        }
-      })
-      .catch( err => {
-        console.log(err);
-      });
-
     if (validate()) {
       let input = {};
       input.firstName = "";
@@ -54,8 +67,12 @@ const SignUp = () => {
       input.password = "";
       input.confirmpassword = "";
       setInputs(input);
+      props.signup(inputs);
     }
   };
+  if (props.registered) {
+    history.push("/signin");
+  }
 
   const validate = () => {
     let input = inputs;
@@ -119,13 +136,14 @@ const SignUp = () => {
 
   return (
     <>
-      <form className="sign__up" onSubmit={handleSubmit} noValidate>
+        <form className={classes.sign__up} onSubmit={handleSubmit} noValidate>
         <Typography gutterBottom variant="h5" component="h3">
           Sign Up
         </Typography>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6}>
             <Input
+             className={classes.input}
               color="secondary"
               type="text"
               placeholder="First name"
@@ -141,6 +159,7 @@ const SignUp = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Input
+             className={classes.input}
               color="secondary"
               type="text"
               placeholder="Last name"
@@ -156,6 +175,7 @@ const SignUp = () => {
           </Grid>
         </Grid>
         <Input
+         className={classes.input}
           color="secondary"
           type="email"
           placeholder="Email"
@@ -169,6 +189,7 @@ const SignUp = () => {
           {errors.email}
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           placeholder="password"
@@ -182,6 +203,7 @@ const SignUp = () => {
           {errors.password}
         </Typography>
         <Input
+         className={classes.input}
           color="secondary"
           type="password"
           placeholder="Confirm password"
@@ -194,15 +216,28 @@ const SignUp = () => {
         <Typography variant="caption" color="error" component="p">
           {errors.confirmpassword}
         </Typography>
-        <Button type="submit" variant="contained" color="secondary">
+        <Button type="submit" variant="contained" className={classes.button} color="secondary">
           Sign Up
         </Button>
       </form>
       <Link to="/">
-        <Icon className="back">reply</Icon>
+      <Icon className={classes.back}>reply</Icon>
       </Link>
     </>
   );
 };
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  return {
+    registered: state.registered,
+    signupProcessing: state.signupProcessing,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signup: (content) => dispatch(startSignup(content)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
