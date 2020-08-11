@@ -5,125 +5,142 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Link, useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
+import Swal from "sweetalert2";
+import {
+  setFirstName,
+  setLastName,
+  setEmail,
+  setPassword,
+  setConfirmPassword,
+} from "../redux/signUpActionTypes";
 import { connect } from "react-redux";
-import { startSignup } from "../../redux/actions";
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-    sign__up: {
-        position: 'absolute',
-        top: '15%',
-        right: '0',
-        left: '0',
-        width: '50%',
-        margin:'0 auto',
-        textAlign: 'center',
-        marginTop: '90px',
-    },
-    input:{
-        marginTop:'20px',
-    },
-    button:{
-        marginTop: '40px'
-    },
-    back: {
-        position: 'absolute',
-        bottom: '30px',
-        left: '30px',
-        fontSize: '70px',
-        color: '#dc3545',
-    }
-  });
+  sign__up: {
+    position: "absolute",
+    top: "15%",
+    right: "0",
+    left: "0",
+    width: "50%",
+    margin: "0 auto",
+    textAlign: "center",
+    marginTop: "90px",
+  },
+  input: {
+    marginTop: "20px",
+  },
+  button: {
+    marginTop: "40px",
+  },
+  back: {
+    position: "absolute",
+    bottom: "30px",
+    left: "30px",
+    fontSize: "70px",
+    color: "#dc3545",
+  },
+});
 
-const SignUp = (props) => {
-  const [inputs, setInputs] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmpassword: "",
-  });
-
+const SignUp = ({
+  setFirstName,
+  firstname,
+  setLastName,
+  lastname,
+  setEmail,
+  email,
+  setPassword,
+  password,
+  setConfirmPassword,
+  confirmpassword,
+}) => {
   const classes = useStyles();
 
   const [errors, setErrors] = useState({});
 
   let history = useHistory();
 
-  const { firstName, lastName, email, password, confirmpassword } = inputs;
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((inputs) => ({ ...inputs, [name]: value }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      let input = {};
-      input.firstName = "";
-      input.lastName = "";
-      input.email = "";
-      input.password = "";
-      input.confirmpassword = "";
-      setInputs(input);
-      props.signup(inputs);
+      axios
+        .post("http://localhost:3000/signup", {
+          firstname,
+          lastname,
+          email,
+          password,
+          confirmpassword,
+        })
+        .then((res) => {
+          if (res.data.result === "register") {
+            Swal.fire({
+              text: `Success! Thank you for signing up ${firstname}`,
+              confirmButtonColor: "#dc3545",
+            });
+            history.push("/signin");
+          } else if (res.data.result === "exist") {
+            Swal.fire({
+              text: `User already exists with this email ${email}!`,
+              confirmButtonColor: "#dc3545",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
-  if (props.registered) {
-    history.push("/signin");
-  }
 
   const validate = () => {
-    let input = inputs;
     let errors = {};
     let isValid = true;
 
-    if (!input.firstName) {
+    if (!firstname) {
       isValid = false;
-      errors.firstName = "Please enter your first name";
+      errors.firstname = "Please enter your first name";
     }
-    if (!input.lastName) {
+    if (!lastname) {
       isValid = false;
-      errors.lastName = "Please enter your last name";
+      errors.lastname = "Please enter your last name";
     }
-    if (!input.email) {
+    if (!email) {
       isValid = false;
       errors.email = "Please enter your email Address";
     }
-    if (typeof input.email !== "undefined") {
+    if (typeof email !== "undefined") {
       let pattern = new RegExp(
         /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
       );
-      if (!pattern.test(input.email)) {
+      if (!pattern.test(email)) {
         isValid = false;
         errors.email = "Please enter a valid email address";
       }
     }
-    if (!input.password) {
+    if (!password) {
       isValid = false;
       errors.password = "Please enter your passwordword";
     }
-    if (typeof input.password !== "undefined") {
+    if (typeof password !== "undefined") {
       let pattern = new RegExp(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,64}$/
       );
-      if (!pattern.test(input.password)) {
+      if (!pattern.test(password)) {
         isValid = false;
         errors.password =
           "Please enter a valid passwordword - 1 uppercase and 1 lowecase letters, 1 symbol and 1 number(min 8 max 64)";
       }
     }
 
-    if (!input.confirmpassword) {
+    if (!confirmpassword) {
       isValid = false;
       errors.confirmpassword = "Please enter your confirm passwordword";
     }
     if (
-      typeof input.password !== "undefined" &&
-      typeof input.confirmpassword !== "undefined"
+      typeof password !== "undefined" &&
+      typeof confirmpassword !== "undefined"
     ) {
-      if (input.password !== input.confirmpassword) {
+      if (password !== confirmpassword) {
         isValid = false;
         errors.confirmpasswordword = errors.confirmpassword
           ? "Please enter your confirm password"
@@ -136,52 +153,52 @@ const SignUp = (props) => {
 
   return (
     <>
-        <form className={classes.sign__up} onSubmit={handleSubmit} noValidate>
+      <form className={classes.sign__up} onSubmit={handleSubmit} noValidate>
         <Typography gutterBottom variant="h5" component="h3">
           Sign Up
         </Typography>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6}>
             <Input
-             className={classes.input}
+              className={classes.input}
               color="secondary"
               type="text"
               placeholder="First name"
-              name="firstName"
-              value={firstName}
-              onChange={handleChange}
+              name="firstname"
+              value={firstname}
+              onChange={(e) => setFirstName(e.target.value)}
               required
               fullWidth
             />
             <Typography variant="caption" color="error" component="p">
-              {errors.firstName}
+              {errors.firstname}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Input
-             className={classes.input}
+              className={classes.input}
               color="secondary"
               type="text"
               placeholder="Last name"
-              name="lastName"
-              value={lastName}
-              onChange={handleChange}
+              name="lastname"
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
               required
               fullWidth
             />
             <Typography variant="caption" color="error" component="p">
-              {errors.lastName}
+              {errors.lastname}
             </Typography>
           </Grid>
         </Grid>
         <Input
-         className={classes.input}
+          className={classes.input}
           color="secondary"
           type="email"
           placeholder="Email"
           name="email"
           value={email}
-          onChange={handleChange}
+          onChange={(e) => setEmail(e.target.value)}
           required
           fullWidth
         />
@@ -189,13 +206,13 @@ const SignUp = (props) => {
           {errors.email}
         </Typography>
         <Input
-         className={classes.input}
+          className={classes.input}
           color="secondary"
           type="password"
           placeholder="password"
           name="password"
           value={password}
-          onChange={handleChange}
+          onChange={(e) => setPassword(e.target.value)}
           required
           fullWidth
         />
@@ -203,41 +220,48 @@ const SignUp = (props) => {
           {errors.password}
         </Typography>
         <Input
-         className={classes.input}
+          className={classes.input}
           color="secondary"
           type="password"
           placeholder="Confirm password"
           name="confirmpassword"
           value={confirmpassword}
-          onChange={handleChange}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           required
           fullWidth
         />
         <Typography variant="caption" color="error" component="p">
           {errors.confirmpassword}
         </Typography>
-        <Button type="submit" variant="contained" className={classes.button} color="secondary">
+        <Button
+          type="submit"
+          variant="contained"
+          className={classes.button}
+          color="secondary"
+        >
           Sign Up
         </Button>
       </form>
       <Link to="/">
-      <Icon className={classes.back}>reply</Icon>
+        <Icon className={classes.back}>reply</Icon>
       </Link>
     </>
   );
 };
+const mapStateToProps = (state) => ({
+  firstname: state.signup.getIn(["userData", "firstname"]),
+  lastname: state.signup.getIn(["userData", "lastname"]),
+  email: state.signup.getIn(["userData", "email"]),
+  password: state.signup.getIn(["userData", "password"]),
+  confirmpassword: state.signup.getIn(["userData", "confirmpassword"]),
+});
 
-const mapStateToProps = (state) => {
-  return {
-    registered: state.registered,
-    signupProcessing: state.signupProcessing,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signup: (content) => dispatch(startSignup(content)),
-  };
+const mapDispatchToProps = {
+  setFirstName,
+  setLastName,
+  setEmail,
+  setPassword,
+  setConfirmPassword,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

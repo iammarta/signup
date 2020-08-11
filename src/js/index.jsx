@@ -1,11 +1,9 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { SignUp, SignIn, Dashboard } from "./components/pages";
-import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
-import { reducer } from "./redux/reducer";
-import thunk from "redux-thunk";
+import { SignUp, SignIn, Dashboard } from "./components/index.jsx";
+import {Provider as ReduxProvider} from 'react-redux';
+import store from "./redux/store";
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
@@ -14,7 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import purple from '@material-ui/core/colors/purple';
 
 const useStyles = makeStyles({
     root: {
@@ -38,7 +35,6 @@ const useStyles = makeStyles({
   });
 
 
-const store = createStore(reducer, applyMiddleware(thunk));
 
 const App = () => {
     const classes = useStyles();
@@ -63,7 +59,7 @@ const App = () => {
           <Container>
           <Card className={classes.card}>
         <CardContent>
-        <Typography gutterBottom variant="h5" classname={classes.cardTitle} component="h2">
+        <Typography gutterBottom variant="h5" className={classes.cardTitle} component="h2">
            Do you have an account?
            </Typography>
            <Typography gutterBottom variant="body1" color="textSecondary" component="p">
@@ -87,10 +83,10 @@ const App = () => {
   const rootElement = document.getElementById("root");
 
   ReactDOM.render(
-    <Provider store={store}>
       <Router>
+          <ReduxProvider store={store}>
         <App />
-      </Router>
-    </Provider>,
+        </ReduxProvider>
+      </Router>,
     rootElement
   );
